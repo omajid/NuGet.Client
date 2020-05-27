@@ -100,6 +100,7 @@ namespace NuGet.Common
             _telemetryActivity?.Dispose();
         }
 
+        [Obsolete]
         public static void EmitTelemetryEvent(TelemetryEvent TelemetryEvent)
         {
             NuGetTelemetryService?.EmitTelemetryEvent(TelemetryEvent);

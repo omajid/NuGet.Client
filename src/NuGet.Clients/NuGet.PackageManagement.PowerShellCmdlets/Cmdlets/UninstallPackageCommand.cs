@@ -2,13 +2,11 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Management.Automation;
 using System.Threading;
 using NuGet.Common;
 using NuGet.PackageManagement.Telemetry;
-using NuGet.PackageManagement.VisualStudio;
 using NuGet.ProjectManagement;
 using NuGet.Protocol.Core.Types;
 using NuGet.VisualStudio;
@@ -87,6 +85,7 @@ namespace NuGet.PackageManagement.PowerShellCmdlets
             });
 
             stopWatch.Stop();
+
             var actionTelemetryEvent = VSTelemetryServiceUtility.GetActionTelemetryEvent(
                 OperationId.ToString(),
                 new[] { Project },
@@ -97,8 +96,7 @@ namespace NuGet.PackageManagement.PowerShellCmdlets
                 _packageCount,
                 stopWatch.Elapsed.TotalSeconds);
 
-            // emit telemetry event along with granular level events
-            TelemetryActivity.EmitTelemetryEvent(actionTelemetryEvent);
+            actionTelemetryEvent.Emit();
         }
 
         protected override void EndProcessing()

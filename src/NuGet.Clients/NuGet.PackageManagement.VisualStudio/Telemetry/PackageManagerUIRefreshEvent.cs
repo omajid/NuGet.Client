@@ -10,20 +10,30 @@ namespace NuGet.PackageManagement.Telemetry
     {
         private const string EventName = "PMUIRefresh";
 
-        public PackageManagerUIRefreshEvent(
+        private PackageManagerUIRefreshEvent() :
+            base(EventName)
+        {
+        }
+
+        public static void Emit(
+            INuGetTelemetryService telemetryService,
             Guid parentId,
             bool isSolutionLevel,
             RefreshOperationSource refreshSource,
             RefreshOperationStatus refreshStatus,
             string tab,
-            TimeSpan timeSinceLastRefresh) : base(EventName)
+            TimeSpan timeSinceLastRefresh)
         {
-            base["ParentId"] = parentId.ToString();
-            base["IsSolutionLevel"] = isSolutionLevel;
-            base["RefreshSource"] = refreshSource;
-            base["RefreshStatus"] = refreshStatus;
-            base["Tab"] = tab;
-            base["TimeSinceLastRefresh"] = timeSinceLastRefresh.TotalMilliseconds;
+            var telemetryEvent = new PackageManagerUIRefreshEvent();
+
+            telemetryEvent["ParentId"] = parentId.ToString();
+            telemetryEvent["IsSolutionLevel"] = isSolutionLevel;
+            telemetryEvent["RefreshSource"] = refreshSource;
+            telemetryEvent["RefreshStatus"] = refreshStatus;
+            telemetryEvent["Tab"] = tab;
+            telemetryEvent["TimeSinceLastRefresh"] = timeSinceLastRefresh.TotalMilliseconds;
+
+            telemetryEvent.Emit(telemetryService);
         }
     }
 

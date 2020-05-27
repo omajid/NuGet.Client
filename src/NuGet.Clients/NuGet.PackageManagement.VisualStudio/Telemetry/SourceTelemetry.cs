@@ -26,24 +26,26 @@ namespace NuGet.PackageManagement.Telemetry
             YesV3AndV2 = YesV3 | YesV2,
         }
 
-        public static TelemetryEvent GetRestoreSourceSummaryEvent(
+        public static TelemetryEvent EmitRestoreSourceSummaryEvent(
             Guid parentId,
             IEnumerable<PackageSource> packageSources,
             PackageSourceTelemetry.Totals protocolDiagnosticTotals)
         {
-            return GetSourceSummaryEvent(
+            return EmitSourceSummaryEvent(
+                null,
                 "RestorePackageSourceSummary",
                 parentId,
                 packageSources,
                 protocolDiagnosticTotals);
         }
 
-        public static TelemetryEvent GetSearchSourceSummaryEvent(
+        public static TelemetryEvent EmitSearchSourceSummaryEvent(
+            this INuGetTelemetryService telemetryService,
             Guid parentId,
             IEnumerable<PackageSource> packageSources,
             PackageSourceTelemetry.Totals protocolDiagnosticTotals)
         {
-            return GetSourceSummaryEvent(
+            return telemetryService.EmitSourceSummaryEvent(
                 "SearchPackageSourceSummary",
                 parentId,
                 packageSources,
@@ -53,7 +55,8 @@ namespace NuGet.PackageManagement.Telemetry
         /// <summary>
         /// Create a SourceSummaryEvent event with counts of local vs http and v2 vs v3 feeds.
         /// </summary>
-        private static TelemetryEvent GetSourceSummaryEvent(
+        private static TelemetryEvent EmitSourceSummaryEvent(
+            this INuGetTelemetryService telemetryService,
             string eventName,
             Guid parentId,
             IEnumerable<PackageSource> packageSources,
@@ -119,7 +122,7 @@ namespace NuGet.PackageManagement.Telemetry
                 }
             }
 
-            return new SourceSummaryTelemetryEvent(
+            var telemetryEvent = new SourceSummaryTelemetryEvent(
                 eventName,
                 parentId,
                 local,
@@ -129,6 +132,10 @@ namespace NuGet.PackageManagement.Telemetry
                 vsOfflinePackages,
                 dotnetCuratedFeed,
                 protocolDiagnosticTotals);
+
+            telemetryEvent.Emit(telemetryService);
+
+            return telemetryEvent;
         }
 
         // NumLocalFeeds(c:\ or \\ or file:///)

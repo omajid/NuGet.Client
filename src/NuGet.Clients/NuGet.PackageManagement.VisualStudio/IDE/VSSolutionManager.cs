@@ -26,8 +26,8 @@ using NuGet.ProjectModel;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.VisualStudio;
-using Task = System.Threading.Tasks.Task;
 using IAsyncServiceProvider = Microsoft.VisualStudio.Shell.IAsyncServiceProvider;
+using Task = System.Threading.Tasks.Task;
 
 namespace NuGet.PackageManagement.VisualStudio
 {
@@ -717,7 +717,7 @@ namespace NuGet.PackageManagement.VisualStudio
                 // Emit project specific telemetry as we are adding the project to the cache.
                 // This ensures we do not emit the events over and over while the solution is
                 // open.
-                TelemetryActivity.EmitTelemetryEvent(await VSTelemetryServiceUtility.GetProjectTelemetryEventAsync(nuGetProject));
+                (await VSTelemetryServiceUtility.GetProjectTelemetryEventAsync(nuGetProject)).Emit();
             }
 
             if (string.IsNullOrEmpty(DefaultNuGetProjectName) ||

@@ -25,6 +25,18 @@ namespace NuGet.Common
             _piiProperties = new Dictionary<string, object>();
         }
 
+        public static void Emit(string eventName)
+        {
+            var telemetryEvent = new TelemetryEvent(eventName);
+            telemetryEvent.Emit();
+        }
+
+        public void Emit(INuGetTelemetryService telemetryService = null)
+        {
+            telemetryService = telemetryService == null ? TelemetryActivity.NuGetTelemetryService : telemetryService;
+            telemetryService?.EmitTelemetryEvent(this);
+        }
+
         public string Name { get; }
 
         /// <summary>

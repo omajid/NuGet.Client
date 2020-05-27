@@ -131,22 +131,23 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                 .Setup(x => x.PostEvent(It.IsAny<TelemetryEvent>()))
                 .Callback<TelemetryEvent>(x => lastTelemetryEvent = x);
 
-            var duration = 1.12;
-            var service = new NuGetVSTelemetryService(telemetrySession.Object);
+            TelemetryActivity.NuGetTelemetryService = new NuGetVSTelemetryService(telemetrySession.Object);
 
-            var parentId = Guid.NewGuid().ToString();
+            var parentId = Guid.NewGuid();
 
             // Act
-            service.EmitTelemetryEvent(new ActionTelemetryStepEvent(parentId, stepName, duration));
+            var actionTelemetryStepEvent = new ActionTelemetryStepEvent(stepName);
+            using (TelemetryActivity.Create(parentId, actionTelemetryStepEvent))
+            {
+            }
 
             // Assert
             Assert.NotNull(lastTelemetryEvent);
             Assert.Equal(ActionTelemetryStepEvent.NugetActionStepsEventName, lastTelemetryEvent.Name);
-            Assert.Equal(3, lastTelemetryEvent.Count);
+            Assert.Equal(6, lastTelemetryEvent.Count);
 
-            Assert.Equal(parentId, lastTelemetryEvent["ParentId"].ToString());
+            Assert.Equal(parentId.ToString(), lastTelemetryEvent["ParentId"].ToString());
             Assert.Equal(stepName, lastTelemetryEvent["SubStepName"].ToString());
-            Assert.Equal(duration, (double)lastTelemetryEvent["Duration"]);
         }
 
         public static IEnumerable<object[]> GetStepNames()

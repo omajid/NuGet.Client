@@ -38,7 +38,10 @@ namespace NuGet.PackageManagement.VisualStudio.Test
 
             var operationId = Guid.NewGuid().ToString();
 
-            var restoreTelemetryData = new RestoreTelemetryEvent(
+            TelemetryActivity.NuGetTelemetryService = new NuGetVSTelemetryService(telemetrySession.Object);
+
+            // Act
+            var restoreTelemetryData = RestoreTelemetryEvent.Emit(
                 operationId,
                 projectIds: new[] { Guid.NewGuid().ToString() },
                 source: source,
@@ -49,10 +52,6 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                 endTime: DateTimeOffset.Now,
                 duration: 2.10,
                 new IntervalTracker("Activity"));
-            var service = new NuGetVSTelemetryService(telemetrySession.Object);
-
-            // Act
-            service.EmitTelemetryEvent(restoreTelemetryData);
 
             // Assert
             VerifyTelemetryEventData(operationId, restoreTelemetryData, lastTelemetryEvent);
@@ -81,7 +80,10 @@ namespace NuGet.PackageManagement.VisualStudio.Test
 
             var operationId = Guid.NewGuid().ToString();
 
-            var restoreTelemetryData = new RestoreTelemetryEvent(
+            TelemetryActivity.NuGetTelemetryService = new NuGetVSTelemetryService(telemetrySession.Object);
+
+            // Act
+            var restoreTelemetryData = RestoreTelemetryEvent.Emit(
                 operationId,
                 projectIds: new[] { Guid.NewGuid().ToString() },
                 source: RestoreOperationSource.OnBuild,
@@ -93,10 +95,6 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                 duration: 2.10,
                 tracker
                 );
-            var service = new NuGetVSTelemetryService(telemetrySession.Object);
-
-            // Act
-            service.EmitTelemetryEvent(restoreTelemetryData);
 
             // Assert
 

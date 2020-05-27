@@ -93,11 +93,10 @@ namespace NuGet.PackageManagement.VisualStudio.Test
             var expectedIsSolutionLevel = true;
             var expectedTab = "All";
             var expectedTimeSinceLastRefresh = TimeSpan.FromSeconds(1);
-            var refreshEvent = new PackageManagerUIRefreshEvent(expectedGuid, expectedIsSolutionLevel, expectedRefreshSource, expectedRefreshStatus, expectedTab, expectedTimeSinceLastRefresh);
             var target = new NuGetVSTelemetryService(telemetrySession.Object);
 
             // Act
-            target.EmitTelemetryEvent(refreshEvent);
+            PackageManagerUIRefreshEvent.Emit(target, expectedGuid, expectedIsSolutionLevel, expectedRefreshSource, expectedRefreshStatus, expectedTab, expectedTimeSinceLastRefresh);
 
             // Assert
             telemetrySession.Verify(x => x.PostEvent(It.IsAny<TelemetryEvent>()), Times.Once);

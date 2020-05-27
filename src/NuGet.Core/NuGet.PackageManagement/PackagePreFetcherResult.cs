@@ -2,12 +2,10 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using NuGet.Common;
-using NuGet.Configuration;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Protocol.Core.Types;
@@ -179,7 +177,7 @@ namespace NuGet.PackageManagement
                 telemetryEvent["ParentId"] = parentId.ToString();
             }
 
-            TelemetryActivity.EmitTelemetryEvent(telemetryEvent);
+            telemetryEvent.Emit();
         }
 
         private DownloadResourceResult GetPackagesFolderResult(string nupkgPath)

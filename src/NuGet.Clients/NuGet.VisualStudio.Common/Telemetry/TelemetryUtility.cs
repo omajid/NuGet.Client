@@ -4,7 +4,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Windows.Documents;
 using NuGet.Common;
 using NuGet.Configuration;
 
@@ -66,8 +65,7 @@ namespace NuGet.VisualStudio.Telemetry
                 return te;
             }
 
-            TelemetryEvent telemetryEvent = ToTelemetryEvent(exception, $"errors/{className}.{methodName}");
-            TelemetryActivity.EmitTelemetryEvent(telemetryEvent);
+            ToTelemetryEvent(exception, $"errors/{className}.{methodName}").Emit();
         }
 
         /// <summary>

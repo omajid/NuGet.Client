@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -20,7 +19,6 @@ using NuGet.Common;
 using NuGet.Frameworks;
 using NuGet.PackageManagement.Utility;
 using NuGet.ProjectManagement;
-using NuGet.ProjectModel;
 using NuGet.VisualStudio;
 using PathUtility = NuGet.Common.PathUtility;
 using Task = System.Threading.Tasks.Task;
@@ -827,7 +825,7 @@ namespace NuGet.PackageManagement.VisualStudio
                             // We've encountered a project system that doesn't implement References3, or
                             // there's some sort of setup issue such that we can't find the library with
                             // the References3 type. Send a report about this.
-                            TelemetryActivity.EmitTelemetryEvent(new TelemetryEvent("References3InvalidCastException"));
+                            TelemetryEvent.Emit("References3InvalidCastException");
                         }
 
                         // If that didn't work, fall back to References.Add.

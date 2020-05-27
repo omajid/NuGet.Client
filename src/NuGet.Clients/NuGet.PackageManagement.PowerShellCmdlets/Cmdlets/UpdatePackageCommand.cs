@@ -9,12 +9,10 @@ using System.Management.Automation;
 using System.Threading.Tasks;
 using NuGet.Common;
 using NuGet.PackageManagement.Telemetry;
-using NuGet.PackageManagement.VisualStudio;
 using NuGet.Packaging.Core;
 using NuGet.Packaging.Signing;
 using NuGet.ProjectManagement;
 using NuGet.ProjectManagement.Projects;
-using NuGet.ProjectModel;
 using NuGet.Protocol.Core.Types;
 using NuGet.Resolver;
 using NuGet.Versioning;
@@ -139,6 +137,7 @@ namespace NuGet.PackageManagement.PowerShellCmdlets
 
             // stop timer for telemetry event and create action telemetry event instance
             TelemetryServiceUtility.StopTimer();
+
             var actionTelemetryEvent = VSTelemetryServiceUtility.GetActionTelemetryEvent(
                 OperationId.ToString(),
                 new[] { Project },
@@ -149,8 +148,7 @@ namespace NuGet.PackageManagement.PowerShellCmdlets
                 _packageCount,
                 TelemetryServiceUtility.GetTimerElapsedTimeInSeconds());
 
-            // emit telemetry event along with granular level events
-            TelemetryActivity.EmitTelemetryEvent(actionTelemetryEvent);
+            actionTelemetryEvent.Emit();
         }
 
         protected override void WarnIfParametersAreNotSupported()

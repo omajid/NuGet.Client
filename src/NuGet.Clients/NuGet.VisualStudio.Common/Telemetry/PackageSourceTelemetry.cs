@@ -205,7 +205,7 @@ namespace NuGet.VisualStudio.Telemetry
 
                 if (telemetry != null)
                 {
-                    TelemetryActivity.EmitTelemetryEvent(telemetry);
+                    telemetry.Emit();
                 }
             }
         }

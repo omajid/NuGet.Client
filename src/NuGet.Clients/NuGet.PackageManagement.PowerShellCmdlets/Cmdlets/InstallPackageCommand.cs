@@ -13,7 +13,6 @@ using System.Text;
 using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.PackageManagement.Telemetry;
-using NuGet.PackageManagement.VisualStudio;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Packaging.Signing;
@@ -88,6 +87,7 @@ namespace NuGet.PackageManagement.PowerShellCmdlets
 
             // stop timer for telemetry event and create action telemetry event instance
             TelemetryServiceUtility.StopTimer();
+
             var actionTelemetryEvent = VSTelemetryServiceUtility.GetActionTelemetryEvent(
                 OperationId.ToString(),
                 new[] { Project },
@@ -98,8 +98,7 @@ namespace NuGet.PackageManagement.PowerShellCmdlets
                 _packageCount,
                 TelemetryServiceUtility.GetTimerElapsedTimeInSeconds());
 
-            // emit telemetry event along with granular level events
-            TelemetryActivity.EmitTelemetryEvent(actionTelemetryEvent);
+            actionTelemetryEvent.Emit();
         }
 
         /// <summary>

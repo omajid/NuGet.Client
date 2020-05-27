@@ -17,7 +17,27 @@ namespace NuGet.VisualStudio
         public static string SolutionDependencyGraphSpecCreation = nameof(SolutionDependencyGraphSpecCreation);
         public static string PackageReferenceRestoreDuration = nameof(PackageReferenceRestoreDuration);
 
-        public RestoreTelemetryEvent(
+        private RestoreTelemetryEvent(
+            string operationId,
+            string[] projectIds,
+            DateTimeOffset startTime,
+            NuGetOperationStatus status,
+            int packageCount,
+            DateTimeOffset endTime,
+            double duration)
+            : base(
+                  RestoreActionEventName,
+                  operationId,
+                  projectIds,
+                  startTime,
+                  status,
+                  packageCount,
+                  endTime,
+                  duration)
+        {
+        }
+
+        public static RestoreTelemetryEvent Emit(
             string operationId,
             string[] projectIds,
             RestoreOperationSource source,
@@ -27,15 +47,27 @@ namespace NuGet.VisualStudio
             int noOpProjectsCount,
             DateTimeOffset endTime,
             double duration,
-            IntervalTracker intervalTimingTracker) : base(RestoreActionEventName, operationId, projectIds, startTime, status, packageCount, endTime, duration)
+            IntervalTracker intervalTimingTracker)
         {
-            base[nameof(OperationSource)] = source;
-            base[nameof(NoOpProjectsCount)] = noOpProjectsCount;
+            var telemetryEvent = new RestoreTelemetryEvent(
+                  operationId,
+                  projectIds,
+                  startTime,
+                  status,
+                  packageCount,
+                  endTime,
+                  duration);
+
+            telemetryEvent[nameof(OperationSource)] = source;
+            telemetryEvent[nameof(NoOpProjectsCount)] = noOpProjectsCount;
 
             foreach (var (intervalName, intervalDuration) in intervalTimingTracker.GetIntervals())
             {
-                base[intervalName] = intervalDuration;
+                telemetryEvent[intervalName] = intervalDuration;
             }
+
+            telemetryEvent.Emit();
+            return telemetryEvent;
         }
 
         public const string RestoreActionEventName = "RestoreInformation";

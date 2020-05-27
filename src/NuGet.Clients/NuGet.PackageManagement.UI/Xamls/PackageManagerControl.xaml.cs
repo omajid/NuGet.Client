@@ -8,9 +8,12 @@ using System.Globalization;
 using System.Linq;
 using System.Security;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Microsoft.VisualStudio.Experimentation;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
 using NuGet.Common;
@@ -19,18 +22,15 @@ using NuGet.PackageManagement.Telemetry;
 using NuGet.PackageManagement.VisualStudio;
 using NuGet.Packaging.Core;
 using NuGet.ProjectManagement;
+using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Resolver;
 using NuGet.Versioning;
 using NuGet.VisualStudio;
 using NuGet.VisualStudio.Telemetry;
 using Resx = NuGet.PackageManagement.UI;
-using VSThreadHelper = Microsoft.VisualStudio.Shell.ThreadHelper;
 using Task = System.Threading.Tasks.Task;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.Shell;
-using NuGet.Protocol;
-using Microsoft.VisualStudio.Experimentation;
+using VSThreadHelper = Microsoft.VisualStudio.Shell.ThreadHelper;
 
 namespace NuGet.PackageManagement.UI
 {
@@ -341,14 +341,14 @@ namespace NuGet.PackageManagement.UI
 
         private void EmitRefreshEvent(TimeSpan timeSpan, RefreshOperationSource refreshOperationSource, RefreshOperationStatus status)
         {
-            TelemetryActivity.EmitTelemetryEvent(
-                                new PackageManagerUIRefreshEvent(
-                                    _sessionGuid,
-                                    Model.IsSolution,
-                                    refreshOperationSource,
-                                    status,
-                                    _topPanel.Filter.ToString(),
-                                    timeSpan));
+            PackageManagerUIRefreshEvent.Emit(
+                TelemetryActivity.NuGetTelemetryService,
+                _sessionGuid,
+                Model.IsSolution,
+                refreshOperationSource,
+                status,
+                _topPanel.Filter.ToString(),
+                timeSpan);
         }
 
         private TimeSpan GetTimeSinceLastRefreshAndRestart()
@@ -975,12 +975,12 @@ namespace NuGet.PackageManagement.UI
                 && operationId.HasValue
                 && selectedIndex >= 0)
             {
-                TelemetryActivity.EmitTelemetryEvent(new SearchSelectionTelemetryEvent(
+                SearchSelectionTelemetryEvent.Emit(
                     operationId.Value,
                     recommendedCount,
                     selectedIndex,
                     selectedPackage.Id,
-                    selectedPackage.Version));
+                    selectedPackage.Version);
             }
         }
 

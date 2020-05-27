@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using NuGet.Common;
 
@@ -8,12 +9,21 @@ namespace NuGet.PackageManagement
 {
     public class ActionTelemetryStepEvent : TelemetryEvent
     {
+        [Obsolete]
         public ActionTelemetryStepEvent(string parentId, string stepName, double duration) :
             base(NugetActionStepsEventName, new Dictionary<string, object>
                 {
                     { nameof(ParentId), parentId },
                     { nameof(SubStepName), string.Join(",", stepName) },
                     { nameof(Duration), duration }
+                })
+        {
+        }
+
+        public ActionTelemetryStepEvent(string stepName) :
+            base(NugetActionStepsEventName, new Dictionary<string, object>
+                {
+                    { nameof(SubStepName), string.Join(",", stepName) },
                 })
         {
         }

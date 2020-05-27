@@ -272,7 +272,7 @@ namespace NuGet.SolutionRestoreManager
             var projectIds = sortedProjects.Select(
                 project => project.GetMetadata<string>(NuGetProjectMetadataKeys.ProjectId)).ToArray();
 
-            var restoreTelemetryEvent = new RestoreTelemetryEvent(
+            RestoreTelemetryEvent.Emit(
                 _nuGetProjectContext.OperationId.ToString(),
                 projectIds,
                 source,
@@ -284,12 +284,8 @@ namespace NuGet.SolutionRestoreManager
                 duration,
                 intervalTimingTracker);
 
-            TelemetryActivity.EmitTelemetryEvent(restoreTelemetryEvent);
-
             var sources = _sourceRepositoryProvider.PackageSourceProvider.LoadPackageSources().ToList();
-            var sourceEvent = SourceTelemetry.GetRestoreSourceSummaryEvent(_nuGetProjectContext.OperationId, sources, protocolDiagnosticTotals);
-
-            TelemetryActivity.EmitTelemetryEvent(sourceEvent);
+            SourceTelemetry.EmitRestoreSourceSummaryEvent(_nuGetProjectContext.OperationId, sources, protocolDiagnosticTotals);
         }
 
         private async Task RestorePackageSpecProjectsAsync(

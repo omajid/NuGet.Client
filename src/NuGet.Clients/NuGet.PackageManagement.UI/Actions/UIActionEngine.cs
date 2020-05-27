@@ -8,6 +8,8 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using NuGet.Common;
 using NuGet.PackageManagement.Telemetry;
 using NuGet.PackageManagement.VisualStudio;
@@ -15,8 +17,6 @@ using NuGet.Packaging.Core;
 using NuGet.ProjectManagement;
 using NuGet.Protocol.Core.Types;
 using NuGet.VisualStudio;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 using TelemetryPiiProperty = Microsoft.VisualStudio.Telemetry.TelemetryPiiProperty;
 
@@ -38,7 +38,7 @@ namespace NuGet.PackageManagement.UI
         /// Create a UIActionEngine to perform installs/uninstalls
         /// </summary>
         public UIActionEngine(
-            ISourceRepositoryProvider sourceProvider, 
+            ISourceRepositoryProvider sourceProvider,
             NuGetPackageManager packageManager,
             INuGetLockService lockService)
         {
@@ -138,13 +138,14 @@ namespace NuGet.PackageManagement.UI
                 // raise upgrade telemetry event with Cancelled status
                 var packagesCount = upgradeInformationWindowModel.UpgradeDependencyItems.Count;
 
-                var upgradeTelemetryEvent = new UpgradeInformationTelemetryEvent();
-                upgradeTelemetryEvent.SetResult(
+                var upgradeInformationTelemetryEvent = new UpgradeInformationTelemetryEvent();
+
+                upgradeInformationTelemetryEvent.SetResult(
                     uiService.Projects,
                     NuGetOperationStatus.Cancelled,
                     packagesCount);
 
-                TelemetryActivity.EmitTelemetryEvent(upgradeTelemetryEvent);
+                upgradeInformationTelemetryEvent.Emit();
 
                 return;
             }
@@ -324,9 +325,9 @@ namespace NuGet.PackageManagement.UI
 
             List<string> removedPackages = null;
             HashSet<Tuple<string, string>> existingPackages = new HashSet<Tuple<string, string>>();
-            List<Tuple<string,string>> addedPackages = null;
-            List<Tuple<string,string>> updatedPackagesOld = null;
-            List<Tuple<string,string>> updatedPackagesNew = null;
+            List<Tuple<string, string>> addedPackages = null;
+            List<Tuple<string, string>> updatedPackagesOld = null;
+            List<Tuple<string, string>> updatedPackagesNew = null;
 
             // Enable granular level telemetry events for nuget ui operation
             uiService.ProjectContext.OperationId = Guid.NewGuid();
@@ -535,7 +536,7 @@ namespace NuGet.PackageManagement.UI
 
                     actionTelemetryEvent["InstalledPackageEnumerationTimeInMilliseconds"] = packageEnumerationTime.ElapsedMilliseconds;
 
-                    TelemetryActivity.EmitTelemetryEvent(actionTelemetryEvent);
+                    actionTelemetryEvent.Emit();
                 }
             }, token);
         }
@@ -673,7 +674,7 @@ namespace NuGet.PackageManagement.UI
                     potentialProjects.Add(project);
                 }
             }
-            
+
             // only show this dialog if there are any new project(s) with no installed packages.
             if (potentialProjects.Count > 0)
             {
@@ -779,7 +780,7 @@ namespace NuGet.PackageManagement.UI
         /// </summary>
         private async Task ExecuteActionsAsync(
             IEnumerable<ResolvedAction> actions,
-            INuGetProjectContext projectContext, 
+            INuGetProjectContext projectContext,
             ICommonOperations commonOperations,
             UserAction userAction,
             SourceCacheContext sourceCacheContext,
