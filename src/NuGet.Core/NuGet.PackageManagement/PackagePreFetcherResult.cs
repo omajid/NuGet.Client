@@ -179,7 +179,7 @@ namespace NuGet.PackageManagement
                 telemetryEvent["ParentId"] = parentId.ToString();
             }
 
-            TelemetryActivity.EmitTelemetryEvent(telemetryEvent);
+            telemetryEvent.Post();
         }
 
         private DownloadResourceResult GetPackagesFolderResult(string nupkgPath)

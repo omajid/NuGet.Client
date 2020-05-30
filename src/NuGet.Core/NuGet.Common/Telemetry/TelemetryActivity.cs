@@ -113,8 +113,8 @@ namespace NuGet.Common
             _telemetryActivity?.Dispose();
         }
 
-        /// <summary> Emit a singular telemetry event. </summary>
-        /// <param name="TelemetryEvent"> Telemetry event. </param>
+        /// <summary> Obsolete. Use <see cref="TelemetryEvent.Post"/> instead. </summary>
+        [Obsolete]
         public static void EmitTelemetryEvent(TelemetryEvent TelemetryEvent)
         {
             NuGetTelemetryService?.EmitTelemetryEvent(TelemetryEvent);

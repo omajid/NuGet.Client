@@ -150,7 +150,7 @@ namespace NuGet.PackageManagement.PowerShellCmdlets
                 TelemetryServiceUtility.GetTimerElapsedTimeInSeconds());
 
             // emit telemetry event along with granular level events
-            TelemetryActivity.EmitTelemetryEvent(actionTelemetryEvent);
+            actionTelemetryEvent.Post();
         }
 
         protected override void WarnIfParametersAreNotSupported()

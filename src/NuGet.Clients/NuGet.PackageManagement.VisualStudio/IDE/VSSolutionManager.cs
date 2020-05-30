@@ -717,7 +717,8 @@ namespace NuGet.PackageManagement.VisualStudio
                 // Emit project specific telemetry as we are adding the project to the cache.
                 // This ensures we do not emit the events over and over while the solution is
                 // open.
-                TelemetryActivity.EmitTelemetryEvent(await VSTelemetryServiceUtility.GetProjectTelemetryEventAsync(nuGetProject));
+                var telemetryEvent = await VSTelemetryServiceUtility.GetProjectTelemetryEventAsync(nuGetProject);
+                telemetryEvent.Post();
             }
 
             if (string.IsNullOrEmpty(DefaultNuGetProjectName) ||

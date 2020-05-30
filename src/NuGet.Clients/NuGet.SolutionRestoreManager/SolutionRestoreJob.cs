@@ -284,12 +284,12 @@ namespace NuGet.SolutionRestoreManager
                 duration,
                 intervalTimingTracker);
 
-            TelemetryActivity.EmitTelemetryEvent(restoreTelemetryEvent);
+            restoreTelemetryEvent.Post();
 
             var sources = _sourceRepositoryProvider.PackageSourceProvider.LoadPackageSources().ToList();
             var sourceEvent = SourceTelemetry.GetRestoreSourceSummaryEvent(_nuGetProjectContext.OperationId, sources, protocolDiagnosticTotals);
 
-            TelemetryActivity.EmitTelemetryEvent(sourceEvent);
+            sourceEvent.Post();
         }
 
         private async Task RestorePackageSpecProjectsAsync(

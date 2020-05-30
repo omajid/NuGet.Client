@@ -67,7 +67,7 @@ namespace NuGet.VisualStudio.Telemetry
             }
 
             TelemetryEvent telemetryEvent = ToTelemetryEvent(exception, $"errors/{className}.{methodName}");
-            TelemetryActivity.EmitTelemetryEvent(telemetryEvent);
+            telemetryEvent.Post();
         }
 
         /// <summary>

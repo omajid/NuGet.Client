@@ -78,5 +78,13 @@ namespace NuGet.Common
         {
             return _piiProperties;
         }
+
+        /// <summary> Post the event to a telemetry service. </summary>
+        /// <param name="telemetryService"> Telemetry service. If not provided, default instance of telemetry service will be used. </param>
+        public void Post(INuGetTelemetryService telemetryService = null)
+        {
+            telemetryService = telemetryService == null ? TelemetryActivity.NuGetTelemetryService : telemetryService;
+            telemetryService?.EmitTelemetryEvent(this);
+        }
     }
 }

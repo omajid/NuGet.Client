@@ -98,7 +98,7 @@ namespace NuGet.PackageManagement.PowerShellCmdlets
                 stopWatch.Elapsed.TotalSeconds);
 
             // emit telemetry event along with granular level events
-            TelemetryActivity.EmitTelemetryEvent(actionTelemetryEvent);
+            actionTelemetryEvent.Post();
         }
 
         protected override void EndProcessing()

@@ -144,7 +144,7 @@ namespace NuGet.PackageManagement.UI
                     NuGetOperationStatus.Cancelled,
                     packagesCount);
 
-                TelemetryActivity.EmitTelemetryEvent(upgradeTelemetryEvent);
+                upgradeTelemetryEvent.Post();
 
                 return;
             }
@@ -535,7 +535,7 @@ namespace NuGet.PackageManagement.UI
 
                     actionTelemetryEvent["InstalledPackageEnumerationTimeInMilliseconds"] = packageEnumerationTime.ElapsedMilliseconds;
 
-                    TelemetryActivity.EmitTelemetryEvent(actionTelemetryEvent);
+                    actionTelemetryEvent.Post();
                 }
             }, token);
         }

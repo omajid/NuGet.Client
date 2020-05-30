@@ -341,14 +341,15 @@ namespace NuGet.PackageManagement.UI
 
         private void EmitRefreshEvent(TimeSpan timeSpan, RefreshOperationSource refreshOperationSource, RefreshOperationStatus status)
         {
-            TelemetryActivity.EmitTelemetryEvent(
-                                new PackageManagerUIRefreshEvent(
+            var telemetryEvent = new PackageManagerUIRefreshEvent(
                                     _sessionGuid,
                                     Model.IsSolution,
                                     refreshOperationSource,
                                     status,
                                     _topPanel.Filter.ToString(),
-                                    timeSpan));
+                                    timeSpan);
+
+            telemetryEvent.Post();
         }
 
         private TimeSpan GetTimeSinceLastRefreshAndRestart()
@@ -975,12 +976,14 @@ namespace NuGet.PackageManagement.UI
                 && operationId.HasValue
                 && selectedIndex >= 0)
             {
-                TelemetryActivity.EmitTelemetryEvent(new SearchSelectionTelemetryEvent(
+                var telemetryEvent = new SearchSelectionTelemetryEvent(
                     operationId.Value,
                     recommendedCount,
                     selectedIndex,
                     selectedPackage.Id,
-                    selectedPackage.Version));
+                    selectedPackage.Version);
+
+                telemetryEvent.Post();
             }
         }
 

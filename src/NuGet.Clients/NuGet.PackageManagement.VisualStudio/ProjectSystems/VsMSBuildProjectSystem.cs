@@ -827,7 +827,7 @@ namespace NuGet.PackageManagement.VisualStudio
                             // We've encountered a project system that doesn't implement References3, or
                             // there's some sort of setup issue such that we can't find the library with
                             // the References3 type. Send a report about this.
-                            TelemetryActivity.EmitTelemetryEvent(new TelemetryEvent("References3InvalidCastException"));
+                            new TelemetryEvent("References3InvalidCastException").Post();
                         }
 
                         // If that didn't work, fall back to References.Add.
