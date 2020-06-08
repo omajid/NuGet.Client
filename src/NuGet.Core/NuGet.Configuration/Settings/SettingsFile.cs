@@ -102,7 +102,7 @@ namespace NuGet.Configuration
             XDocument config = null;
             ExecuteSynchronized(() =>
             {
-                config = XmlUtility.GetOrCreateDocument(CreateDefaultConfig(), ConfigFilePath);
+                config = FileSystemUtility.GetOrCreateXmlDocument(CreateDefaultConfig(), ConfigFilePath);
             });
 
             _xDocument = config;
